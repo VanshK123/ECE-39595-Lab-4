@@ -82,6 +82,15 @@ public:
      *  A vector of pairs representing the canonical form of the polynomial
      */
     std::vector<std::pair<power, coeff>> canonical_form() const;
+
+    //THIS IS WHT I ADDED
+    //size_t power;
+    //int coeff;
+    //we use a vector of pairs to store the coefficients and powers
+    std::vector<std::pair<power, coeff>> CoeffAndPowerVec; //this is the vector of pairs
+
+    long size; //this is used to keep track of size of the array
+    long biggestpower; //this is used to keep track of the biggest power in the array
 };
 
 #endif
