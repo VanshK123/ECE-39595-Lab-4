@@ -2,6 +2,7 @@
 #include <chrono>
 #include <optional>
 #include <vector>
+#include <algorithm>
 
 
 #include "poly.h"
@@ -315,7 +316,43 @@ std::vector<std::pair<power, coeff>> polynomial::canonical_form() const
     //this is the main function that we need to implement
     std::vector<std::pair<power, coeff>> result;
 
-    //we first initialize three arrays, o
+    //we first initialize three arrays, one for the powers, one for the coeffs and one for the result
+    int powers[size];
+    int coeffs[size];
+    int result_coeffs[size];
+
+    //we initialize the result_coeffs array with 0
+    for (size_t i = 0; i < size; i++)
+    {
+        result_coeffs[i] = 0;
+    }
+
+    //we initialize the powers and coeffs arrays with the values from the vector
+    for (size_t i = 0; i < size; i++)
+    {
+        powers[i] = CoeffAndPowerVec[i].second;
+        coeffs[i] = CoeffAndPowerVec[i].first;
+    }
+
+    //we sort the powers array
+    std::sort(powers, powers + size);
+
+    //we sort the coeffs array
+    std::sort(coeffs, coeffs + size);
+
+    //we initialize the result_coeffs array with the values from the coeffs array
+    for (size_t i = 0; i < size; i++)
+    {
+        result_coeffs[i] = coeffs[i];
+    }
+
+    //we initialize the result vector with the values from the result_coeffs array
+    for (size_t i = 0; i < size; i++)
+    {
+        result.push_back(std::make_pair(powers[i], result_coeffs[i]));
+    }
+
+
     return result;
 }
 
