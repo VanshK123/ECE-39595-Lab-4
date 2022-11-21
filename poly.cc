@@ -115,16 +115,21 @@ polynomial polynomial::operator*(const polynomial &other) const
 {
     //this is the multiplication operator
     polynomial result;
-    /*
+    
     int currentbiggestpower = INT32_MAX;
     //we initialize the iterators
     auto it1 = CoeffAndPowerVec.begin();
     auto it2 = other.CoeffAndPowerVec.begin();
+    /*
+    for(auto i = it1; i < other.CoeffAndPowerVec.end(); i++)
+    {
+        
+    }*/
     
     //we loop through the vectors
-    for(auto i = 0; i != other.CoeffAndPowerVec.end(); i++)
+    for(auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
     {
-        for(auto j = 0; j != CoeffAndPowerVec.end(); j++)
+        for(auto j = it1; j != CoeffAndPowerVec.end(); j++)
         {
             //we push back the pair from the first vector
             result.CoeffAndPowerVec.push_back(std::make_pair(it1->first + it2->first, it1->second * it2->second));
@@ -134,7 +139,7 @@ polynomial polynomial::operator*(const polynomial &other) const
     //we update the size and biggestpower
     result.size = result.CoeffAndPowerVec.size();
     result.biggestpower = result.CoeffAndPowerVec[0].first;
-    */
+    
     return result;
 }
 
