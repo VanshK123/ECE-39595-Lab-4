@@ -1,11 +1,10 @@
+#include "poly.h"
+
 #include <iostream>
 #include <chrono>
 #include <optional>
 #include <vector>
 #include <algorithm>
-
-
-#include "poly.h"
 
 using namespace std;
 
@@ -145,7 +144,24 @@ polynomial polynomial::operator*(const polynomial &other) const
 {
     //this is the multiplication operator
     polynomial result;
-    //TODO
+    int currentbiggestpower = INT32_MAX;
+    //we initialize the iterators
+    auto it1 = CoeffAndPowerVec.begin();
+    auto it2 = other.CoeffAndPowerVec.begin();
+    
+    //we loop through the vectors
+    for(auto i = 0; i != other.CoeffAndPowerVec.end(); i++)
+    {
+        for(auto j = 0; j != CoeffAndPowerVec.end(); j++)
+        {
+            //we push back the pair from the first vector
+            result.CoeffAndPowerVec.push_back(std::make_pair(it1->first + it2->first, it1->second * it2->second));
+        }
+    }
+
+    //we update the size and biggestpower
+    result.size = result.CoeffAndPowerVec.size();
+    result.biggestpower = result.CoeffAndPowerVec[0].first;
 
     return result;
 }
