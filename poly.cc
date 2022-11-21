@@ -3,11 +3,13 @@
 #include <optional>
 #include <vector>
 
+
 #include "poly.h"
+
+using namespace std;
 
 polynomial::polynomial()
 {
-
     //we push back the pair (0,0) to the vector
     CoeffAndPowerVec.push_back(std::make_pair(0,0));
 
@@ -16,13 +18,15 @@ polynomial::polynomial()
     biggestpower = 0;
 }
 
+
+
 template <typename Iter>
 polynomial::polynomial(Iter begin, Iter end)
 {
     //we are using an iterator to go through the vector
 
     //we first find size of the iterator
-    itersize = 0;
+    Iter itersize = 0;
     for (Iter i = begin; i != end; i++)
     {
         itersize++;
@@ -42,7 +46,7 @@ polynomial::polynomial(Iter begin, Iter end)
 
     //we set the size to itersize
     size = itersize;
-    biggestpower = big;
+    //biggestpower = big;
 
 }
 
@@ -57,7 +61,6 @@ polynomial::polynomial(const polynomial &other)
     size = other.size;
     biggestpower = other.biggestpower;
 }
-
 void polynomial::print() const
 {
     //NOT GRADED - just used for debugging, prints in x^y form
@@ -68,15 +71,14 @@ void polynomial::print() const
     std::cout << std::endl;
 
 }
-polynomial::polynomial &operator=(const polynomial &other)
+
+polynomial &polynomial::operator=(const polynomial &other)
 {
     //this is the assignment operator, so we can just copy the elements from the other polynomial
     if(this == &other)
     {
         return *this;
     }
-
-    
 
     //copy the vector
     CoeffAndPowerVec = other.CoeffAndPowerVec;
@@ -87,13 +89,12 @@ polynomial::polynomial &operator=(const polynomial &other)
 
     
     //we delete the old array
-    delete[] CoeffAndPowerarray;
+    //delete[] CoeffAndPowerarray;
 
     return *this;
 }
 
-
-polynomial::polynomial operator+(const polynomial &other) const
+polynomial polynomial::operator+(const polynomial &other) const
 {
     //this is the addition operator, so we can just add the elements from the other polynomial
     polynomial result;
@@ -139,15 +140,17 @@ polynomial::polynomial operator+(const polynomial &other) const
     return result;
 
 }
-polynomial::polynomial operator*(const polynomial &other) const
+
+
+polynomial polynomial::operator*(const polynomial &other) const
 {
     //this is the multiplication operator
     polynomial result;
     //TODO
 
     return result;
-
 }
+
 bool polynomial::operator<(const polynomial &other) const
 {
     //this is the less than operator, so we can just compare the elements from the other polynomial
@@ -260,6 +263,7 @@ bool polynomial::operator>(const polynomial &other) const
 
 
 }
+
 bool polynomial::operator==(const polynomial &other) const
 {
     //this is the equal to operator, so we can just compare the elements from the other polynomial
@@ -306,17 +310,19 @@ bool polynomial::operator==(const polynomial &other) const
 
 }
 
-std::vector<std::pair<power, coeff>> canonical_form() const
+std::vector<std::pair<power, coeff>> polynomial::canonical_form() const
 {
     //this is the main function that we need to implement
     std::vector<std::pair<power, coeff>> result;
 
     //we first initialize three arrays, o
+    return result;
 }
 
-size_t find_degree_of()
+size_t polynomial::find_degree_of()
 {
     //this is the find degree function, so we can just return the power
     return biggestpower;
 
 }
+
