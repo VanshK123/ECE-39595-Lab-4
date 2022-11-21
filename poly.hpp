@@ -19,15 +19,13 @@ polynomial::polynomial()
     biggestpower = 0;
 }
 
-
-
 template <typename Iter>
 polynomial::polynomial(Iter begin, Iter end)
 {
     //we are using an iterator to go through the vector
 
     //we first find size of the iterator
-    Iter itersize = 0;
+    size_t itersize = 0;
     for (Iter i = begin; i != end; i++)
     {
         itersize++;
