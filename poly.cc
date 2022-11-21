@@ -18,35 +18,6 @@ polynomial::polynomial()
     biggestpower = 0;
 }
 
-template <typename Iter>
-polynomial::polynomial(Iter begin, Iter end)
-{
-    //we are using an iterator to go through the vector
-
-    //we first find size of the iterator
-    size_t itersize = 0;
-    for (Iter i = begin; i != end; i++)
-    {
-        itersize++;
-    }
-
-    //we push back the pairs from the iterator to the vector
-    for (Iter i = begin; i != end; i++)
-    {
-        CoeffAndPowerVec.push_back(*i);
-
-        //we also find the biggest power
-        if (i->first > biggestpower)
-        {
-            biggestpower = i->first;
-        }
-    }
-
-    //we set the size to itersize
-    size = itersize;
-    //biggestpower = big;
-
-}
 
 polynomial::polynomial(const polynomial &other)
 {
@@ -144,6 +115,7 @@ polynomial polynomial::operator*(const polynomial &other) const
 {
     //this is the multiplication operator
     polynomial result;
+    /*
     int currentbiggestpower = INT32_MAX;
     //we initialize the iterators
     auto it1 = CoeffAndPowerVec.begin();
@@ -162,7 +134,7 @@ polynomial polynomial::operator*(const polynomial &other) const
     //we update the size and biggestpower
     result.size = result.CoeffAndPowerVec.size();
     result.biggestpower = result.CoeffAndPowerVec[0].first;
-
+    */
     return result;
 }
 

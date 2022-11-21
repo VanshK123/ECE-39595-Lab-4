@@ -92,6 +92,36 @@ public:
 
 };
 
-#include "poly.hpp"
+//#include "poly.hpp"
+template <typename Iter>
+polynomial::polynomial(Iter begin, Iter end)
+{
+    //we are using an iterator to go through the vector
+
+    //we first find size of the iterator
+    size_t itersize = 0;
+    for (Iter i = begin; i != end; i++)
+    {
+        itersize++;
+    }
+
+    //we push back the pairs from the iterator to the vector
+    for (Iter i = begin; i != end; i++)
+    {
+        CoeffAndPowerVec.push_back(*i);
+
+        //we also find the biggest power
+        if (i->first > biggestpower)
+        {
+            biggestpower = i->first;
+        }
+    }
+
+    //we set the size to itersize
+    size = itersize;
+    //biggestpower = big;
+
+}
+
 
 #endif
