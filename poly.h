@@ -97,7 +97,7 @@ template <typename Iter>
 polynomial::polynomial(Iter begin, Iter end)
 {
     //we are using an iterator to go through the vector
-
+    int big = 0;
     //we first find size of the iterator
     size_t itersize = 0;
     for (Iter i = begin; i != end; i++)
@@ -111,15 +111,16 @@ polynomial::polynomial(Iter begin, Iter end)
         CoeffAndPowerVec.push_back(*i);
 
         //we also find the biggest power
-        if (i->first > biggestpower)
+        if (i->first > big)
         {
-            biggestpower = i->first;
+           big = i->first;
         }
     }
 
     //we set the size to itersize
     size = itersize;
-    //biggestpower = big;
+    //biggestpower
+    biggestpower = big;
 
 }
 
