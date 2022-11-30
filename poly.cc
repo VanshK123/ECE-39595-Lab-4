@@ -168,6 +168,7 @@ polynomial polynomial::operator*(const polynomial &other) const
     // we initialize the iterators
     auto it1 = CoeffAndPowerVec.begin();
     auto it2 = other.CoeffAndPowerVec.begin();
+    multi(it1,it2);
 
     // we loop through the vectors
     for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
@@ -267,6 +268,9 @@ void multi(polynomial &p1, polynomial &p2)
     {
         p1 = p1 * r;
     }
+    //print the result
+    p1.print();
+
 }
 
 bool polynomial::operator<(const polynomial &other) const
