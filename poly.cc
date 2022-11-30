@@ -5,6 +5,7 @@
 #include <optional>
 #include <vector>
 #include <algorithm>
+#include <thread>
 
 using namespace std;
 
@@ -232,6 +233,38 @@ polynomial polynomial::operator*(const polynomial &other) const
     return result;
 }
 
+void multi(polynomial &p1, polynomial &p2)
+{
+    //multithreading
+    //create 8 parts for the 8 threads
+    int parts = 8;
+    int partsize = p1.size / parts;
+    int remainder = p1.size % parts;
+    int start = 0;
+    int end = partsize;
+    std::vector<std::thread> threads;
+    std::vector<polynomial> results;
+
+    //create the threads
+    for (int i = 0; i < parts; i++)
+    {
+        if (i == parts - 1)
+        {
+            end += remainder;
+        }
+        threads.push_back(std::thread(multiThread, std::ref(p1), std::ref(p2), start, end, std::ref(results)));
+        start += partsize;
+        end += partsize;
+    }
+    
+    //join the threads
+    for (auto &t : threads)
+    {
+        t.join();
+    }
+    
+}
+
 bool polynomial::operator<(const polynomial &other) const
 {
     // this is the less than operator, so we can just compare the elements from the other polynomial
@@ -415,31 +448,25 @@ std::vector<std::pair<power, coeff>> polynomial::canonical_form() const
 
 
     /*
-
     // we first initialize three arrays, one for the powers, one for the coeffs and one for the result
     int powers[size];
     int coeffs[size];
     int result_coeffs[size];
-
     // we initialize the result_coeffs array with 0
     for (size_t i = 0; i < size; i++)
     {
         result_coeffs[i] = 0;
     }
-
     // we initialize the powers and coeffs arrays with the values from the vector
     for (size_t i = 0; i < size; i++)
     {
         powers[i] = CoeffAndPowerVec[i].second;
         coeffs[i] = CoeffAndPowerVec[i].first;
     }
-
     // we sort the powers array
     std::sort(powers, powers + size);
-
     // we sort the coeffs array
     std::sort(coeffs, coeffs + size);
-
     // print the powers array
     std::cout << "powers: ";
     for (size_t i = 0; i < size; i++)
@@ -454,13 +481,11 @@ std::vector<std::pair<power, coeff>> polynomial::canonical_form() const
         std::cout << coeffs[i] << " ";
     }
     std::cout << std::endl;
-
     // we initialize the result_coeffs array with the values from the coeffs array
     for (size_t i = 0; i < size; i++)
     {
         result_coeffs[i] = coeffs[i];
     }
-
     // we initialize the result vector with the values from the result_coeffs array
     for (size_t i = 0; i < size; i++)
     {

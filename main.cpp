@@ -353,5 +353,5 @@ int main()
     std::optional<double> result19 = poly_test_copy(p3, p4, false);
     printResult(result19);
 
-    testpolys();
+    //testpolys();
 }
