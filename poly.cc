@@ -252,7 +252,7 @@ void multi(polynomial &p1, polynomial &p2)
         {
             end += remainder;
         }
-        threads.push_back(std::thread(multiThread, std::ref(p1), std::ref(p2), start, end, std::ref(results)));
+        threads.push_back(std::thread(multi, std::ref(p1), std::ref(p2), start, end, std::ref(results)));
         start += partsize;
         end += partsize;
     }
@@ -262,7 +262,11 @@ void multi(polynomial &p1, polynomial &p2)
     {
         t.join();
     }
-    
+    //multiply the results
+    for (auto &r : results)
+    {
+        p1 = p1 * r;
+    }
 }
 
 bool polynomial::operator<(const polynomial &other) const
