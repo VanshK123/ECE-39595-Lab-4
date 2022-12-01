@@ -251,11 +251,11 @@ int main()
     std::vector<std::pair<power, coeff>> solution = {{2, 1}, {1, 2}, {0, 1}};
 
     /** This holds (x+1), which we'll pass to each polynomial */
-    std::vector<std::pair<power, coeff>> poly_input;
-
-    for(int i = 0 ; i < 25000; i++){
-        poly_input.push_back({i,i});
-    }
+    std::vector<std::pair<power, coeff>> poly_input = {{1, 1}, {0, 1}};
+    /*
+    for(int i = 0 ; i < 5000; i++){
+        poly_input.push_back({i,i+1},{i+2,i});
+    }*/
 
 
     polynomial p1(poly_input.begin(), poly_input.end());

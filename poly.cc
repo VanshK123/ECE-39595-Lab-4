@@ -8,7 +8,7 @@
 #include <thread>
 
 using namespace std;
-void multiplyThreads(const polynomial &original, const polynomial &other, auto it1, auto it2,  polynomial &result);
+void multiplyThreads(const polynomial &original, const polynomial &other, int start, int end,  polynomial &result);
 
 
 polynomial::polynomial()
@@ -161,8 +161,8 @@ polynomial polynomial::operator*(const polynomial &other) const
     int parts = 8;
     int partsize = size / parts;
     int remainder = size % parts;
-    auto start = CoeffAndPowerVec.begin();
-    auto end = other.CoeffAndPowerVec.begin();
+    int start = 0;
+    int end = partsize;
     int i = 0;
     vector<polynomial> results;
     results.resize(parts);
@@ -222,14 +222,14 @@ polynomial polynomial::operator*(const polynomial &other) const
     return result;
 }
 
-void multiplyThreads(const polynomial &original, const polynomial &other,auto it1, auto it2, polynomial &result)
+void multiplyThreads(const polynomial &original, const polynomial &other,int start, int end, polynomial &result)
 {
     // this is the multiplication operator
     //polynomial result;
     int currentbiggestpower = 0;
     // we initialize the iterators
-    //auto it1 = original.CoeffAndPowerVec.begin();
-    //auto it2 = other.CoeffAndPowerVec.begin();
+    auto it1 = original.CoeffAndPowerVec.begin();
+    auto it2 = other.CoeffAndPowerVec.begin();
     
 
     // we loop through the vectors
