@@ -8,7 +8,7 @@
 #include <thread>
 
 using namespace std;
-void multiplyThreads(const polynomial &original, const polynomial &other, int start, int end,  polynomial &result);
+void multiplyThreads(const polynomial &original, const polynomial &other, auto it1, auto it2,  polynomial &result);
 
 
 polynomial::polynomial()
@@ -157,25 +157,12 @@ polynomial polynomial::operator+(const polynomial &other) const
 }
 
 polynomial polynomial::operator*(const polynomial &other) const
-{ /*
-  // multithreading
-  vector<std::thread> threads;
-  for (size_t i = 0; i < 8; i++)
-  {
-      printf("thread %d created\n", i);
-      threads.push_back(std::thread(multiplyThreads, *this, other));
-  }
-
-  for(size_t i = 0; i < 8; i++){
-      printf("thread %d joined\n", i);
-      threads[i].join();
-  }*/
-
+{ 
     int parts = 8;
     int partsize = size / parts;
     int remainder = size % parts;
-    int start = 0;
-    int end = partsize;
+    auto start = CoeffAndPowerVec.begin();
+    auto end = other.CoeffAndPowerVec.begin();
     int i = 0;
     vector<polynomial> results;
     results.resize(parts);
@@ -235,121 +222,15 @@ polynomial polynomial::operator*(const polynomial &other) const
     return result;
 }
 
-/*
-// this is the multiplication operator
-polynomial result;
-int currentbiggestpower = 0;
-// we initialize the iterators
-auto it1 = CoeffAndPowerVec.begin();
-auto it2 = other.CoeffAndPowerVec.begin();
-//multi(&it1,&it2);
-// we loop through the vectors
-for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
-{
-    for (auto j = it1; j != CoeffAndPowerVec.end(); j++)
-    {
-        // we push back the pair from the first vector
-        //if power is already in the vector, we add the coefficient
-        if(result.CoeffAndPowerVec.size() > 0 && result.CoeffAndPowerVec.back().first == i->first + j->first){
-            result.CoeffAndPowerVec.back().second += i->second * j->second;
-        }
-        else{
-            result.CoeffAndPowerVec.push_back(std::make_pair(i->first + j->first, i->second * j->second));
-        }
-        //result.CoeffAndPowerVec.push_back(std::make_pair(i->first + j->first, i->second * j->second));
-        if (i->first + j->first > currentbiggestpower)
-        {
-            currentbiggestpower = i->first + j->first;
-        }
-    }
-}
-//we combine the coefficients if they have the same power
-for (size_t i = 0; i < result.CoeffAndPowerVec.size(); i++)
-{
-    for (size_t j = i + 1; j < result.CoeffAndPowerVec.size(); j++)
-    {
-        if (result.CoeffAndPowerVec[i].first == result.CoeffAndPowerVec[j].first)
-        {
-            result.CoeffAndPowerVec[i].second += result.CoeffAndPowerVec[j].second;
-            result.CoeffAndPowerVec.erase(result.CoeffAndPowerVec.begin() + j);
-            j--;
-        }
-    }
-}
-//sort so that the highest power is first
-std::sort(result.CoeffAndPowerVec.begin(), result.CoeffAndPowerVec.end(), std::greater<std::pair<int, int>>());
-
-// update biggestpower
-result.biggestpower = currentbiggestpower;
-// if biggest power is greater then 0, trim all 0 coefficients, else leave the 0 power coefficient
-// we trim all 0 coefficients that are not also 0 power
-if (result.CoeffAndPowerVec.size() > 1)
-{
-    printf("size is greater than 1\n");
-    for (auto i = result.CoeffAndPowerVec.begin(); i != result.CoeffAndPowerVec.end(); i++)
-    {
-        if (i->second == 0)
-        {
-            result.CoeffAndPowerVec.erase(i);
-        }
-    }
-}
-// we update the size
-result.size = result.CoeffAndPowerVec.size();
-// we print the result
-printf("Size: %d, Biggest power: %d\n", result.size, result.biggestpower);
-return result;
-*/
-//}
-/*
-void multi(polynomial &p1, polynomial &p2)
-{
-    //multithreading
-    //create 8 parts for the 8 threads
-    int parts = 8;
-    int partsize = p1.size / parts;
-    int remainder = p1.size % parts;
-    int start = 0;
-    int end = partsize;
-    std::vector<std::thread> threads;
-    std::vector<polynomial> results;
-    //create the threads
-    for (int i = 0; i < parts; i++)
-    {
-        if (i == parts - 1)
-        {
-            end += remainder;
-        }
-        threads.push_back(std::thread(multi, std::ref(p1), std::ref(p2), start, end, std::ref(results)));
-        start += partsize;
-        end += partsize;
-    }
-
-    //join the threads
-    for (auto &t : threads)
-    {
-        t.join();
-    }
-    //multiply the results
-    for (auto &r : results)
-    {
-        p1 = p1 * r;
-    }
-    //print the result
-    p1.print();
-}*/
-
-// template<typename poly>
-
-void multiplyThreads(const polynomial &original, const polynomial &other,int start, int end, polynomial &result)
+void multiplyThreads(const polynomial &original, const polynomial &other,auto it1, auto it2, polynomial &result)
 {
     // this is the multiplication operator
     //polynomial result;
     int currentbiggestpower = 0;
     // we initialize the iterators
-    auto it1 = original.CoeffAndPowerVec.begin();
-    auto it2 = other.CoeffAndPowerVec.begin();
-    // multi(&it1,&it2);
+    //auto it1 = original.CoeffAndPowerVec.begin();
+    //auto it2 = other.CoeffAndPowerVec.begin();
+    
 
     // we loop through the vectors
     for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)

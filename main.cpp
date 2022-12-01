@@ -157,16 +157,11 @@ std::optional<double> poly_test_copy(polynomial &p1,
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
     std::cout << "p1: ";
-    p1.print();
+    //p1.print();
     std::cout << "p2: ";
-    p2.print();
+    //p2.print();
     std::cout << "p3(p1): ";
-    p3.print();
-
-    if (p3.canonical_form() != p1.canonical_form())
-    {
-        return std::nullopt;
-    }
+    //p3.print();
 
     return std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 }
@@ -256,7 +251,12 @@ int main()
     std::vector<std::pair<power, coeff>> solution = {{2, 1}, {1, 2}, {0, 1}};
 
     /** This holds (x+1), which we'll pass to each polynomial */
-    std::vector<std::pair<power, coeff>> poly_input = {{1, 1}, {0, 1}};
+    std::vector<std::pair<power, coeff>> poly_input;
+
+    for(int i = 0 ; i < 25000; i++){
+        poly_input.push_back({i,i});
+    }
+
 
     polynomial p1(poly_input.begin(), poly_input.end());
     polynomial p2(poly_input.begin(), poly_input.end());
