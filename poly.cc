@@ -8,7 +8,8 @@
 #include <thread>
 
 using namespace std;
-void multiplyThreads(const polynomial &original, const polynomial &other);
+void multiplyThreads(const polynomial &original, const polynomial &other, int start, int end,  polynomial &result);
+
 
 polynomial::polynomial()
 {
@@ -193,9 +194,10 @@ polynomial polynomial::operator*(const polynomial &other) const
             {
                 if (i == parts - 1)
                 {
+                    // we create the last thread
                     //threads.push_back(std::thread(multiplyThreads, *this, other, start, end + remainder, std::ref(results[i])));
-                    std::thread t(multiplyThreads, *this, other, start, end + remainder, std::ref(results[i]));
-                    //threads[i] = std::move(t);
+                    std::thread t(multiplyThreads, *this,other, start, end + remainder, std::ref(results[i]));
+                    threads[i] = std::move(t);
                 }
                 else
                 {
