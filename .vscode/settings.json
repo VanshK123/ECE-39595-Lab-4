@@ -44,6 +44,8 @@
         "string": "cpp",
         "string_view": "cpp",
         "system_error": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "condition_variable": "cpp",
+        "mutex": "cpp"
     }
 }

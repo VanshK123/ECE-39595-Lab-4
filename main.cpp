@@ -271,7 +271,8 @@ int main()
     {
         std::cout << "Failed test" << std::endl;
     }
-
+    
+    /*
     std::optional<double> result2 = poly_test_less(p1, p2, false);
     printResult(result2);
 
@@ -279,9 +280,12 @@ int main()
     std::vector<std::pair<power, coeff>> poly_input2 = {{2, 2}, {1, 2}, {0, 1}};
     polynomial p3(poly_input2.begin(), poly_input2.end());
 
-    std::optional<double> result3 = poly_test_less(p1, p3, true);
-    printResult(result3);
+    //std::optional<double> result3 = poly_test_less(p1, p3, true);
+    //printResult(result3);
 
+    std::optional<double> result3 = poly_test(p1, p3, solution);
+    printResult(result3);
+    /*
     std::optional<double> result4 = poly_test_less(p3, p1, false);
     printResult(result4);
     // we create a new polynomial p4 with the value 2x^2 + 2x + 2
@@ -352,6 +356,6 @@ int main()
     // test copy constructor for the case where the polynomials are not equal
     std::optional<double> result19 = poly_test_copy(p3, p4, false);
     printResult(result19);
-
+    */
     //testpolys();
 }

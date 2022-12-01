@@ -156,98 +156,90 @@ polynomial polynomial::operator+(const polynomial &other) const
 }
 
 polynomial polynomial::operator*(const polynomial &other) const
-{
-    // multithreading
-    vector<std::thread> threads;
-    for (size_t i = 0; i < 8; i++)
+{ /*
+  // multithreading
+  vector<std::thread> threads;
+  for (size_t i = 0; i < 8; i++)
+  {
+      printf("thread %d created\n", i);
+      threads.push_back(std::thread(multiplyThreads, *this, other));
+  }
+
+  for(size_t i = 0; i < 8; i++){
+      printf("thread %d joined\n", i);
+      threads[i].join();
+  }*/
+
+    int parts = 8;
+    int partsize = size / parts;
+    int remainder = size % parts;
+    int start = 0;
+    int end = partsize;
+    int i = 0;
+    vector<polynomial> results;
+    results.resize(parts);
+    vector<thread> threads;
+    threads.resize(parts);
+
+    // we create the threads
+    while (i < parts)
     {
-        threads.push_back(std::thread(multiplyThreads, *this, other));
-    }
-    for(size_t i = 0; i < 8; i++){
-        threads[i].join();
-    }
 
-
-
-
-
-}
-/*
-int parts = 8;
-int partsize = size / parts;
-int remainder = size % parts;
-int start = 0;
-int end = partsize;
-int i = 0;
-vector<polynomial> results;
-results.resize(parts);
-vector<thread> threads;
-threads.resize(parts);
-
-//we create the threads
-while(i < parts)
-{
-
-    if(i == parts - 1)
-    {
-       std::thread t(multiplyThreads, this, other, start, end + remainder, std::ref(results[i]));
-
-
-
-    }
-    else
-    {
-        std::thread t(multiplyThreads, this, other, start, end, std::ref(results[i]));
-
-    }
-    //create the threads properly then emplace them into the vector
-    /*
-if(size > parts)
-{
-    //we create parts number of threads
-    for(i = 0; i < parts; i++)
-    {
-        if(i == parts - 1)
+        if (i == parts - 1)
         {
-            std::thread t(multiplyThreads, this, other, start, end + remainder, std::ref(results[i]));
-            threads[i] = std::move(t);
+            std::thread t(multiplyThreads, *this, other, start, end + remainder, std::ref(results[i]));
         }
         else
         {
-            std::thread t(multiplyThreads, this, other, start, end, std::ref(results[i]));
-            threads[i] = std::move(t);
+            std::thread t(multiplyThreads, *this, other, start, end, std::ref(results[i]));
         }
+        // create the threads properly then emplace them into the vector
+        /*
+    if(size > parts)
+    {
+        //we create parts number of threads
+        for(i = 0; i < parts; i++)
+        {
+            if(i == parts - 1)
+            {
+                std::thread t(multiplyThreads, this, other, start, end + remainder, std::ref(results[i]));
+                threads[i] = std::move(t);
+            }
+            else
+            {
+                std::thread t(multiplyThreads, this, other, start, end, std::ref(results[i]));
+                threads[i] = std::move(t);
+            }
+            start = end;
+            end += partsize;
+        }
+    }
+    else
+    {
+        //we create one thread
+        std::thread t(multiplyThreads, this, other, start, end, ref(results[0]));
+        threads.push_back(std::move(t));
+    }*/
         start = end;
         end += partsize;
+        i++;
     }
-}
-else
-{
-    //we create one thread
-    std::thread t(multiplyThreads, this, other, start, end, ref(results[0]));
-    threads.push_back(std::move(t));
-}
-    start = end;
-    end += partsize;
-    i++;
-}
 
-//we join the threads
-for (size_t i = 0; i < parts; i++)
-{
-    threads[i].join();
+    // we join the threads
+    for (size_t i = 0; i < parts; i++)
+    {
+        threads[i].join();
+    }
+
+    // we add the results
+    polynomial result;
+    for (size_t i = 0; i < parts; i++)
+    {
+        result = result + results[i];
+    }
+
+    return result;
 }
-
-//we add the results
-polynomial result;
-for (size_t i = 0; i < parts; i++)
-{
-    result = result + results[i];
-}
-
-return result;
-
-}*/
 
 /*
 // this is the multiplication operator
@@ -359,6 +351,29 @@ void multiplyThreads(const polynomial &original, const polynomial &other)
 {
     // this is the multiplication operator
     polynomial result;
+    int operationNumber = original.CoeffAndPowerVec.size() / 8;
+    int leftOver = original.CoeffAndPowerVec.size() % 8;
+    int start, stop;
+    start = operationNumber * 8 + leftOver;
+    stop = (operationNumber * 9) + leftOver;
+    /*
+    for(int i = start; i < stop; ++i)
+    {
+        int row = i % original.CoeffAndPowerVec.size();
+        int col = i / original.CoeffAndPowerVec.size();
+
+        float remainder = 0.0f;
+
+        for(int j = 0; j < original.CoeffAndPowerVec.size(); ++j)
+        {
+            float temp = original.CoeffAndPowerVec[row].second * other.CoeffAndPowerVec[col].second;
+            temp += remainder;
+            remainder = temp - (int)temp;
+            result.CoeffAndPowerVec[row + col].second += (int)temp;
+        }
+
+
+    }*/
 
     int currentbiggestpower = 0;
     // we initialize the iterators
