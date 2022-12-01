@@ -172,17 +172,17 @@ polynomial polynomial::operator*(const polynomial &other) const
     results.resize(parts);
     vector<thread> threads;
     threads.resize(parts);
-
+    
     //we create the threads
     while(i < parts)
     {
         if(i == parts - 1)
         {
-            threads[i] = thread(operator*, this, other, start, end + remainder, ref(results[i]));
+            threads[i] = thread(&polynomial::multiplies, this, other, start, end + remainder, ref(results[i]));
         }
         else
         {
-            threads[i] = thread(operator*, this, other, start, end, ref(results[i]));
+            threads[i] = thread(&polynomial::multiplies, this, other, start, end, ref(results[i]));
         }
         start = end;
         end += partsize;
