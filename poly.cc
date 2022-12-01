@@ -8,6 +8,7 @@
 #include <thread>
 
 using namespace std;
+void multiplyThreads(const polynomial &original,const polynomial &other);
 
 polynomial::polynomial()
 {
@@ -161,6 +162,7 @@ polynomial polynomial::operator+(const polynomial &other) const
 
 polynomial polynomial::operator*(const polynomial &other) const
 {
+ 
     
     int parts = 8;
     int partsize = size / parts;
@@ -176,14 +178,45 @@ polynomial polynomial::operator*(const polynomial &other) const
     //we create the threads
     while(i < parts)
     {
+        /*
         if(i == parts - 1)
         {
-            threads[i] = thread(&polynomial::multiplies, this, other, start, end + remainder, ref(results[i]));
+           threads[i] = std::thread t(multiplies, this, other, start, end + remainder, std::ref(results[i]));
+           threads[i] = std::move(t)    
+            
+            
         }
         else
         {
-            threads[i] = thread(&polynomial::multiplies, this, other, start, end, ref(results[i]));
+            threads[i] = std::thread t(multiplies, this, other, start, end, std::ref(results[i]));
+            threads[i] = std::move(t);
+        }*/
+        //create the threads properly then emplace them into the vector
+    if(size > parts)
+    {
+        //we create parts number of threads
+        for(i = 0; i < parts; i++)
+        {
+            if(i == parts - 1)
+            {
+                std::thread t(multiplyThreads, this, other, start, end + remainder, std::ref(results[i]));
+                threads[i] = std::move(t);
+            }
+            else
+            {
+                std::thread t(multiplyThreads, this, other, start, end, std::ref(results[i]));
+                threads[i] = std::move(t);
+            }
+            start = end;
+            end += partsize;
         }
+    }
+    else
+    {
+        //we create one thread
+        std::thread t(multiplyThreads, this, other, start, end, ref(results[0]));
+        threads.push_back(std::move(t));
+    }
         start = end;
         end += partsize;
         i++;
@@ -209,13 +242,11 @@ polynomial polynomial::operator*(const polynomial &other) const
     /*
     // this is the multiplication operator
     polynomial result;
-
     int currentbiggestpower = 0;
     // we initialize the iterators
     auto it1 = CoeffAndPowerVec.begin();
     auto it2 = other.CoeffAndPowerVec.begin();
     //multi(&it1,&it2);
-
     // we loop through the vectors
     for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
     {
@@ -236,7 +267,6 @@ polynomial polynomial::operator*(const polynomial &other) const
             }
         }
     }
-
     //we combine the coefficients if they have the same power
     for (size_t i = 0; i < result.CoeffAndPowerVec.size(); i++)
     {
@@ -250,16 +280,13 @@ polynomial polynomial::operator*(const polynomial &other) const
             }
         }
     }
-
     //sort so that the highest power is first
     std::sort(result.CoeffAndPowerVec.begin(), result.CoeffAndPowerVec.end(), std::greater<std::pair<int, int>>());
-
     
     // update biggestpower
     result.biggestpower = currentbiggestpower;
     // if biggest power is greater then 0, trim all 0 coefficients, else leave the 0 power coefficient
     // we trim all 0 coefficients that are not also 0 power
-
     if (result.CoeffAndPowerVec.size() > 1)
     {
         printf("size is greater than 1\n");
@@ -271,10 +298,8 @@ polynomial polynomial::operator*(const polynomial &other) const
             }
         }
     }
-
     // we update the size
     result.size = result.CoeffAndPowerVec.size();
-
     // we print the result
     printf("Size: %d, Biggest power: %d\n", result.size, result.biggestpower);
     return result;
@@ -292,7 +317,6 @@ void multi(polynomial &p1, polynomial &p2)
     int end = partsize;
     std::vector<std::thread> threads;
     std::vector<polynomial> results;
-
     //create the threads
     for (int i = 0; i < parts; i++)
     {
@@ -317,24 +341,24 @@ void multi(polynomial &p1, polynomial &p2)
     }
     //print the result
     p1.print();
-
 }*/
-template<typename bruh>
-bruh polynomial::multiplies(const polynomial &other)
+//template<typename bruh>
+
+void multiplyThreads(const polynomial &original,const polynomial &other)
 {
     // this is the multiplication operator
     polynomial result;
 
     int currentbiggestpower = 0;
     // we initialize the iterators
-    auto it1 = CoeffAndPowerVec.begin();
+    auto it1 = original.CoeffAndPowerVec.begin();
     auto it2 = other.CoeffAndPowerVec.begin();
     //multi(&it1,&it2);
 
     // we loop through the vectors
     for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
     {
-        for (auto j = it1; j != CoeffAndPowerVec.end(); j++)
+        for (auto j = it1; j != original.CoeffAndPowerVec.end(); j++)
         {
             // we push back the pair from the first vector
             //if power is already in the vector, we add the coefficient
@@ -392,7 +416,7 @@ bruh polynomial::multiplies(const polynomial &other)
 
     // we print the result
     printf("Size: %d, Biggest power: %d\n", result.size, result.biggestpower);
-    return result;
+    //return result;
 }
 
 bool polynomial::operator<(const polynomial &other) const
