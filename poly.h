@@ -54,6 +54,8 @@ public:
     bool operator<(const polynomial &other) const;
     bool operator>(const polynomial &other) const;
     bool operator==(const polynomial &other) const;
+    template<typename bruh>
+    bruh multiplies(const polynomial &other);
 
     /**
      * @brief Returns the degree of the polynomial

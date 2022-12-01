@@ -161,6 +161,52 @@ polynomial polynomial::operator+(const polynomial &other) const
 
 polynomial polynomial::operator*(const polynomial &other) const
 {
+    
+    int parts = 8;
+    int partsize = size / parts;
+    int remainder = size % parts;
+    int start = 0;
+    int end = partsize;
+    int i = 0;
+    vector<polynomial> results;
+    results.resize(parts);
+    vector<thread> threads;
+    threads.resize(parts);
+
+    //we create the threads
+    while(i < parts)
+    {
+        if(i == parts - 1)
+        {
+            threads[i] = thread(operator*, this, other, start, end + remainder, ref(results[i]));
+        }
+        else
+        {
+            threads[i] = thread(operator*, this, other, start, end, ref(results[i]));
+        }
+        start = end;
+        end += partsize;
+        i++;
+    }
+
+    //we join the threads
+    for (size_t i = 0; i < parts; i++)
+    {
+        threads[i].join();
+    }
+
+    //we add the results
+    polynomial result;
+    for (size_t i = 0; i < parts; i++)
+    {
+        result = result + results[i];
+    }
+
+    return result;
+
+}
+
+    /*
     // this is the multiplication operator
     polynomial result;
 
@@ -168,7 +214,7 @@ polynomial polynomial::operator*(const polynomial &other) const
     // we initialize the iterators
     auto it1 = CoeffAndPowerVec.begin();
     auto it2 = other.CoeffAndPowerVec.begin();
-    multi(it1,it2);
+    //multi(&it1,&it2);
 
     // we loop through the vectors
     for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
@@ -232,8 +278,9 @@ polynomial polynomial::operator*(const polynomial &other) const
     // we print the result
     printf("Size: %d, Biggest power: %d\n", result.size, result.biggestpower);
     return result;
-}
-
+    */
+//}
+/*
 void multi(polynomial &p1, polynomial &p2)
 {
     //multithreading
@@ -271,6 +318,81 @@ void multi(polynomial &p1, polynomial &p2)
     //print the result
     p1.print();
 
+}*/
+template<typename bruh>
+bruh polynomial::multiplies(const polynomial &other)
+{
+    // this is the multiplication operator
+    polynomial result;
+
+    int currentbiggestpower = 0;
+    // we initialize the iterators
+    auto it1 = CoeffAndPowerVec.begin();
+    auto it2 = other.CoeffAndPowerVec.begin();
+    //multi(&it1,&it2);
+
+    // we loop through the vectors
+    for (auto i = it2; i < other.CoeffAndPowerVec.end(); i++)
+    {
+        for (auto j = it1; j != CoeffAndPowerVec.end(); j++)
+        {
+            // we push back the pair from the first vector
+            //if power is already in the vector, we add the coefficient
+            if(result.CoeffAndPowerVec.size() > 0 && result.CoeffAndPowerVec.back().first == i->first + j->first){
+                result.CoeffAndPowerVec.back().second += i->second * j->second;
+            }
+            else{
+                result.CoeffAndPowerVec.push_back(std::make_pair(i->first + j->first, i->second * j->second));
+            }
+            //result.CoeffAndPowerVec.push_back(std::make_pair(i->first + j->first, i->second * j->second));
+            if (i->first + j->first > currentbiggestpower)
+            {
+                currentbiggestpower = i->first + j->first;
+            }
+        }
+    }
+
+    //we combine the coefficients if they have the same power
+    for (size_t i = 0; i < result.CoeffAndPowerVec.size(); i++)
+    {
+        for (size_t j = i + 1; j < result.CoeffAndPowerVec.size(); j++)
+        {
+            if (result.CoeffAndPowerVec[i].first == result.CoeffAndPowerVec[j].first)
+            {
+                result.CoeffAndPowerVec[i].second += result.CoeffAndPowerVec[j].second;
+                result.CoeffAndPowerVec.erase(result.CoeffAndPowerVec.begin() + j);
+                j--;
+            }
+        }
+    }
+
+    //sort so that the highest power is first
+    std::sort(result.CoeffAndPowerVec.begin(), result.CoeffAndPowerVec.end(), std::greater<std::pair<int, int>>());
+
+    
+    // update biggestpower
+    result.biggestpower = currentbiggestpower;
+    // if biggest power is greater then 0, trim all 0 coefficients, else leave the 0 power coefficient
+    // we trim all 0 coefficients that are not also 0 power
+
+    if (result.CoeffAndPowerVec.size() > 1)
+    {
+        printf("size is greater than 1\n");
+        for (auto i = result.CoeffAndPowerVec.begin(); i != result.CoeffAndPowerVec.end(); i++)
+        {
+            if (i->second == 0)
+            {
+                result.CoeffAndPowerVec.erase(i);
+            }
+        }
+    }
+
+    // we update the size
+    result.size = result.CoeffAndPowerVec.size();
+
+    // we print the result
+    printf("Size: %d, Biggest power: %d\n", result.size, result.biggestpower);
+    return result;
 }
 
 bool polynomial::operator<(const polynomial &other) const
