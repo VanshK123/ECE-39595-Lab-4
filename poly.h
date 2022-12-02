@@ -2,13 +2,6 @@
 #define POLY_H
 #include <cstddef>
 #include <vector>
-#include <thread>
-#include <deque>
-#include <mutex>
-#include <algorithm>
-#include <cassert>
-#include <iostream>
-#include <string>
 
 using power = size_t;
 using coeff = int;
@@ -61,8 +54,9 @@ public:
     bool operator<(const polynomial &other) const;
     bool operator>(const polynomial &other) const;
     bool operator==(const polynomial &other) const;
-    
 
+    //takes two polynomials(this polynomial and another polynomial) and returns one polynomial by reference
+    int MultiplyThreading(const polynomial &other, int start, int end, polynomial &result);
     /**
      * @brief Returns the degree of the polynomial
      *
@@ -131,5 +125,6 @@ polynomial::polynomial(Iter begin, Iter end)
     biggestpower = big;
 
 }
+
 
 #endif

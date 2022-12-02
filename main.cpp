@@ -196,14 +196,14 @@ void testpolys()
     std::vector<std::pair<power, coeff>> poly1;
     std::vector<std::pair<power, coeff>> poly2;
     // read in the data from the file
-    FILE *file = fopen("polys.txt", "r");
+    FILE *file = fopen("simple_poly", "r");
     if (file == NULL)
     {
         std::cout << "Error opening file" << std::endl;
         return;
     }
     // read in the first polynomial
-    for (int i = 0; i < 5000; i++)
+    for (int i = 0; i < 25000; i++)
     {
         power p;
         coeff c;
@@ -211,13 +211,13 @@ void testpolys()
         fscanf(file, "%*c");
         fscanf(file, "%*c");
         fscanf(file, "%zu", &p);
-        printf("%d %d, \n", c, p);
+        //printf("%d %d, \n", c, p);
         poly1.push_back(std::make_pair(p, c));
     }
     // seek to the start of the second polynomial by adding 3 to the current position
     fseek(file, 3, SEEK_CUR);
     // read in the second polynomial
-    for (int i = 0; i < 5000; i++)
+    for (int i = 0; i < 25000; i++)
     {
         power p;
         coeff c;
@@ -234,20 +234,31 @@ void testpolys()
     std::cout << "Length of polynomial 1: " << poly1.size() << std::endl;
     std::cout << "Length of polynomial 2: " << poly2.size() << std::endl;
     // create two polynomials from the data
-    polynomial p1(poly1.begin(), poly1.end());
-    polynomial p2(poly2.begin(), poly2.end());
+    //polynomial p1(poly1.begin(), poly1.end());
+    //polynomial p2(poly2.begin(), poly2.end());
+    polynomial p1(poly1.begin(), poly1.begin() + 200);
+    polynomial p2(poly2.begin(), poly2.begin() + 200);
+
     // print some info about the polynomials
     // poly1
+    /*
     std::cout << "Polynomial 1: ";
      for (int i = 0; i < poly1.size(); i++)
     {
         std::cout << poly1[i].second << ", " << poly1[i].first << std::endl;
-    }
+    }*/
     std::cout << "p1: ";
-    p1.print();
+    //p1.print();
     std::cout << "p2: ";
     // p2.print();
-    std::cout << "p1 == p2: " << (p1 == p2) << std::endl;
+    std::cout << "p1 * p2: " << std::endl;
+    //time the time it takes to multiply the polynomials
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    polynomial p3 = p1 * p2;
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "p3: ";
+     p3.print();
+    std::cout << "Time taken to multiply: " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms" << std::endl;
 }
 
 int main()
@@ -353,5 +364,5 @@ int main()
     std::optional<double> result19 = poly_test_copy(p3, p4, false);
     printResult(result19);
 
-    //testpolys();
+    testpolys();
 }
